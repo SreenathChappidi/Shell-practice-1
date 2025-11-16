@@ -32,5 +32,15 @@ VALIDATE(){ # functions receive inputs through atgs just like shell script
 
 for package in $@
 do
-    echo "package is: $package"
+    # check package is already installed or not
+    dnf list installed $package &>>$LOGS_FILE
+
+    # if exit status is 0, already installed -ne 0 need to install it
+    if [ $? -ne o ]; then
+        dnf install $package -y &>>$LOGS_FILE
+        VALIDATE $? "$package"
+
+    else
+        echo -e "$package already installed ...$Y skkiping $N"
+    fi
 done
